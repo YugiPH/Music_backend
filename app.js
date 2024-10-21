@@ -7,7 +7,7 @@ require('dotenv').config();
 const usersRouter = require('./src/routes/users');
 const songsRouter = require('./src/routes/songs');
 const uploadRouter = require('./src/routes/upload');
-
+const albumRouter = require('./src/routes/albums')
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
 app.use('/users', usersRouter);
 app.use('/songs', songsRouter);
 app.use('/upload', uploadRouter);
+app.use('/albums', albumRouter);
 // Khởi động server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

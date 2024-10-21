@@ -1,46 +1,44 @@
-const User = require("../models/user")
+const Album = require("../models/album")
 
-const getUsers = async () => {
-    const users = await User.find({});
+const getAlbums = async () => {
+    const albums = await Album.find({});
     return {
         ok: true,
         statusCode: 200,
-        data: users,
-        message: "Lay nguoi dung thanh cong!"
+        data: albums,
+        message: "Lay album thanh cong!"
     }
 }
-
-const createUsers = async (data) => {
-    const { username, email, password } = data
-    const isExist = await User.findOne({ email: email }).exec();
+const createAlbum = async (data) => {
+    const { title, releaseDate } = data
+    const isExist = await Album.findOne({ title: title }).exec();
     if (isExist) {
         return {
             ok: false,
             statusCode: 400,
-            message: `email ${email} da ton tai!`
+            message: `Ten ${title} da ton tai!`
         }
     }
-    const user = await User.create(
-        { username: username, email: email, password: password }
+    const album = await Album.create(
+        { title, releaseDate }
     );
     return {
         ok: true,
         statusCode: 200,
-        data: user,
+        data: album,
         message: "Tao thanh cong!"
     }
 }
-
-const updateUser = async (_id, username) => {
-    if (!_id || !username) {
+const updateAlbum = async (_id, title) => {
+    if (!_id || !title) {
         return {
             ok: false,
             statusCode: 400,
             message: `Missing required params`
         }
     }
-    const data = await User.updateOne({ _id: _id }, { username: username });
-    if (data.upsertedCount === 1) {
+    const data = await Album.updateOne({ _id: _id }, { title: title });
+    if (data.upsertedCount === 0) {
         return {
             ok: true,
             statusCode: 200,
@@ -58,15 +56,15 @@ const updateUser = async (_id, username) => {
     }
 }
 
-const deleteUser = async (_id) => {
+const deleteAlbum = async (_id) => {
     if (!_id) {
         return {
             ok: false,
             statusCode: 400,
-            message: `Xoa thanh cong!`
+            message: `Missing required params`
         }
     }
-    const data = await User.deleteOne({ _id: _id });
+    const data = await Album.deleteOne({ _id: _id });
     if (data.deletedCount === 1) {
         return {
             ok: true,
@@ -84,8 +82,6 @@ const deleteUser = async (_id) => {
         }
     }
 }
-
 module.exports = {
-    getUsers, createUsers,
-    updateUser, deleteUser
+    getAlbums, createAlbum, updateAlbum, deleteAlbum
 }

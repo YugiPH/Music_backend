@@ -1,8 +1,8 @@
-const songService = require('../services/songService');
+const albumService = require('../services/albumService');
 
-const getSongs = async (req, res) => {
+const getAlbums = async (req, res) => {
     try {
-        const result = await songService.getSongs();
+        const result = await albumService.getAlbums();
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data
@@ -15,9 +15,9 @@ const getSongs = async (req, res) => {
     }
 }
 
-const createSong = async (req, res) => {
+const createAlbum = async (req, res) => {
     try {
-        const result = await songService.createSong(req.body);
+        const result = await albumService.createAlbum(req.body);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data,
@@ -31,11 +31,11 @@ const createSong = async (req, res) => {
         })
     }
 }
-const updateSong = async (req, res) => {
+const updateAlbum = async (req, res) => {
     try {
         const _id = req.params.id;
         const title = req.body.title
-        const result = await songService.updateSong(_id, title);
+        const result = await albumService.updateAlbum(_id, title);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data,
@@ -50,10 +50,10 @@ const updateSong = async (req, res) => {
         })
     }
 }
-const deleteSong = async (req, res) => {
+const deleteAlbum = async (req, res) => {
     try {
         const _id = req.params.id;
-        const result = await songService.deleteSong(_id);
+        const result = await albumService.deleteAlbum(_id);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data,
@@ -68,6 +68,6 @@ const deleteSong = async (req, res) => {
     }
 }
 module.exports = {
-    getSongs, createSong,
-    updateSong, deleteSong
+    getAlbums, createAlbum,
+    updateAlbum, deleteAlbum
 }
