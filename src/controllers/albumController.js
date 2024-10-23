@@ -31,6 +31,7 @@ const createAlbum = async (req, res) => {
         })
     }
 }
+
 const updateAlbum = async (req, res) => {
     try {
         const _id = req.params.id;
@@ -50,6 +51,7 @@ const updateAlbum = async (req, res) => {
         })
     }
 }
+
 const deleteAlbum = async (req, res) => {
     try {
         const _id = req.params.id;
@@ -67,6 +69,7 @@ const deleteAlbum = async (req, res) => {
         })
     }
 }
+
 module.exports = {
     getAlbums, createAlbum,
     updateAlbum, deleteAlbum

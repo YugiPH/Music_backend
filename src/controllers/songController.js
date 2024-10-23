@@ -17,7 +17,10 @@ const getSongs = async (req, res) => {
 
 const createSong = async (req, res) => {
     try {
-        const result = await songService.createSong(req.body);
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).send('No files were uploaded');
+        }
+        const result = await songService.createSong(req.body, req.files.songFiles);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data,

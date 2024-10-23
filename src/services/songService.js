@@ -1,4 +1,5 @@
-const Song = require("../models/song")
+const Song = require("../models/song");
+const { uploadSingleFile } = require("./uploadFile");
 
 const getSongs = async () => {
     const songs = await Song.find({});
@@ -9,8 +10,8 @@ const getSongs = async () => {
         message: "Lay bai hat thanh cong!"
     }
 }
-const createSong = async (data) => {
-    const { title, streamUrl } = data
+const createSong = async (data, songFiles) => {
+    const { title, artistId } = data
     const isExist = await Song.findOne({ title: title }).exec();
     if (isExist) {
         return {
@@ -19,8 +20,9 @@ const createSong = async (data) => {
             message: `Ten ${title} da ton tai!`
         }
     }
+    let { path } = await uploadSingleFile(songFiles, 'songs');
     const song = await Song.create(
-        { title, streamUrl }
+        { title, artist: artistId, streamUrl: path }
     );
     return {
         ok: true,

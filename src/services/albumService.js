@@ -10,7 +10,7 @@ const getAlbums = async () => {
     }
 }
 const createAlbum = async (data) => {
-    const { title, releaseDate } = data
+    const { title, releaseDate, artist, songs } = data
     const isExist = await Album.findOne({ title: title }).exec();
     if (isExist) {
         return {
@@ -19,8 +19,15 @@ const createAlbum = async (data) => {
             message: `Ten ${title} da ton tai!`
         }
     }
+    if (!artist) {
+        return {
+            ok: false,
+            statusCode: 400,
+            message: `Thieu artist !`
+        }
+    }
     const album = await Album.create(
-        { title, releaseDate }
+        { title, releaseDate, artist }
     );
     return {
         ok: true,
