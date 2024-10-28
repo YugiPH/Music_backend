@@ -10,7 +10,7 @@ const getSongs = async () => {
         message: "Lay bai hat thanh cong!"
     }
 }
-const createSong = async (data, songFiles) => {
+const createSong = async (data, songFiles, imageFiles) => {
     const { title, artistId } = data
     const isExist = await Song.findOne({ title: title }).exec();
     if (isExist) {
@@ -20,9 +20,15 @@ const createSong = async (data, songFiles) => {
             message: `Ten ${title} da ton tai!`
         }
     }
-    let { path } = await uploadSingleFile(songFiles, 'songs');
+    let resultUploadSong = await uploadSingleFile(songFiles, 'songs');
+    let resultUploadImage = await uploadSingleFile(imageFiles, 'images');
     const song = await Song.create(
-        { title, artist: artistId, streamUrl: path }
+        {
+            title,
+            artist: artistId,
+            streamUrl: resultUploadSong.path,
+            imageUrl: resultUploadImage.path
+        }
     );
     return {
         ok: true,
@@ -31,7 +37,7 @@ const createSong = async (data, songFiles) => {
         message: "Tao thanh cong!"
     }
 }
-const updateSong = async (_id, title) => {
+const updateSong = async (_id, title, imageFiles) => {
     if (!_id || !title) {
         return {
             ok: false,
@@ -39,7 +45,21 @@ const updateSong = async (_id, title) => {
             message: `Missing required params`
         }
     }
-    const data = await Song.updateOne({ _id: _id }, { title: title });
+    let resultUploadImage
+    let data;
+    if (imageFiles) {
+        resultUploadImage = await uploadSingleFile(imageFiles, 'images');
+        data = await Song.updateOne(
+            { _id: _id },
+            {
+                title: title,
+                imageUrl: resultUploadImage.path
+            });
+    }
+    data = await Song.updateOne(
+        { _id: _id },
+        { title: title });
+
     if (data.upsertedCount === 0) {
         return {
             ok: true,
