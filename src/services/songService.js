@@ -2,7 +2,7 @@ const Song = require("../models/song");
 const { uploadSingleFile } = require("./uploadFile");
 
 const getSongs = async () => {
-    const songs = await Song.find({});
+    const songs = await Song.find({}).populate('artist');
     return {
         ok: true,
         statusCode: 200,
@@ -10,6 +10,17 @@ const getSongs = async () => {
         message: "Lay bai hat thanh cong!"
     }
 }
+
+const getSongById = async (id) => {
+    const songs = await Song.findById(id).populate('artist');
+    return {
+        ok: true,
+        statusCode: 200,
+        data: songs,
+        message: "Lay thanh cong!"
+    }
+}
+
 const createSong = async (data, songFiles, imageFiles) => {
     const { title, artistId } = data
     const isExist = await Song.findOne({ title: title }).exec();
@@ -105,5 +116,5 @@ const deleteSong = async (_id) => {
     }
 }
 module.exports = {
-    getSongs, createSong, updateSong, deleteSong
+    getSongs, createSong, updateSong, deleteSong, getSongById
 }

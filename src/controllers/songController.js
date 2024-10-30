@@ -15,6 +15,22 @@ const getSongs = async (req, res) => {
     }
 }
 
+const getSongById = async (req, res) => {
+    try {
+        const id = req.params.id
+        const result = await songService.getSongById(id);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 const createSong = async (req, res) => {
     try {
         if (!req.files || Object.keys(req.files).length === 0) {
@@ -72,5 +88,5 @@ const deleteSong = async (req, res) => {
 }
 module.exports = {
     getSongs, createSong,
-    updateSong, deleteSong
+    updateSong, deleteSong, getSongById
 }
