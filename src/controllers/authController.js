@@ -13,7 +13,7 @@ const register = async (req, res) => {
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result,
-            message: result.message
+
         })
     } catch (error) {
         console.log(error)
@@ -24,12 +24,21 @@ const register = async (req, res) => {
     }
 }
 
-const login = async () => {
+const login = async (req, res) => {
     try {
-        const result = await authService.login();
+        const { email, password } = req.body
+        if (!email || !password) {
+            return res.status(400).json({
+                ok: false,
+                data: null,
+                message: 'Thong tin khong day du!'
+            })
+        }
+        const result = await authService.login(email, password);
         return res.status(result.statusCode).json({
             ok: result.ok,
-            data: result.data
+            data: result.data,
+            message: result.message
         })
     } catch (error) {
         return res.status(500).json({

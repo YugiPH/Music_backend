@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }],
-  favoriteSongs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }]
+  favoriteId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorite' }]
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -5,7 +5,7 @@ const songSchema = new mongoose.Schema({
   artist: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: true },
   imageUrl: { type: String, required: true },
   streamUrl: { type: String, required: true },
-  playCount: { type: Number, default: 0 }
+  favoriteId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorite' }]
 });
 
 // Phương thức phát bài hát

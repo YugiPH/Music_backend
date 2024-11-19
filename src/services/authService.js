@@ -22,6 +22,28 @@ const register = async (username, email, password) => {
         message: "Tao thanh cong!"
     }
 }
+
+const login = async (email, password) => {
+    const user = await User.findOne({ email: email }).exec();
+    if (!user) {
+        return {
+            ok: false,
+            statusCode: 400,
+            message: `${email} khong ton tai!`
+        }
+    }
+    const isCorrectPassword = bcrypt.compareSync(password, user.password);
+    let result = null;
+    if (isCorrectPassword === true)
+        result = { username: user.username, email: user.email, _id: user._id }
+    return {
+        ok: true,
+        statusCode: 200,
+        data: result,
+        message: "Dang nhap thanh cong!"
+    }
+}
+
 module.exports = {
-    register
+    register, login
 }

@@ -67,7 +67,41 @@ const deleteUser = async (req, res) => {
         })
     }
 }
+
+const addFavoriteSong = async (req, res) => {
+    try {
+        const result = await userService.addFavoriteSong(req.body.userId, req.body.songId);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data,
+            message: result.message
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
+const getFavoriteSongs = async (req, res) => {
+    try {
+        const result = await userService.getFavoriteSongs(req.body.userId);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 module.exports = {
     getUsers, createUser,
-    updateUser, deleteUser
+    updateUser, deleteUser,
+    addFavoriteSong, getFavoriteSongs
 }
