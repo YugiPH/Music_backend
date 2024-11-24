@@ -86,7 +86,24 @@ const deleteSong = async (req, res) => {
         })
     }
 }
+
+const getFavoriteSongs = async (req, res) => {
+    try {
+        const result = await songService.getFavoriteSongs(req.body.favoriteId);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 module.exports = {
     getSongs, createSong,
-    updateSong, deleteSong, getSongById
+    updateSong, deleteSong,
+    getSongById, getFavoriteSongs
 }

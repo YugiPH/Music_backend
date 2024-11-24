@@ -85,9 +85,24 @@ const addFavoriteSong = async (req, res) => {
     }
 }
 
-const getFavoriteSongs = async (req, res) => {
+const getFavoriteId = async (req, res) => {
     try {
-        const result = await userService.getFavoriteSongs(req.body.userId);
+        const result = await userService.getFavoriteId(req.body.userId);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
+const removeFavoriteSong = async (req, res) => {
+    try {
+        const result = await userService.removeFavoriteSong(req.body.userId, req.body.songId);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data
@@ -103,5 +118,5 @@ const getFavoriteSongs = async (req, res) => {
 module.exports = {
     getUsers, createUser,
     updateUser, deleteUser,
-    addFavoriteSong, getFavoriteSongs
+    addFavoriteSong, getFavoriteId, removeFavoriteSong
 }

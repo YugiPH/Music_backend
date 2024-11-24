@@ -8,10 +8,4 @@ const songSchema = new mongoose.Schema({
   favoriteId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorite' }]
 });
 
-// Phương thức phát bài hát
-songSchema.methods.play = function () {
-  this.playCount += 1;
-  return this.save();
-};
-
 module.exports = mongoose.model('Song', songSchema);

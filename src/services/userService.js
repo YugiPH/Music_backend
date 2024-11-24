@@ -118,7 +118,7 @@ const addFavoriteSong = async (userId, songId) => {
     }
 }
 
-const getFavoriteSongs = async (userId) => {
+const getFavoriteId = async (userId) => {
     const user = await User.findById(userId).select('favoriteId');
     return {
         ok: true,
@@ -128,8 +128,58 @@ const getFavoriteSongs = async (userId) => {
     }
 }
 
+const removeFavoriteSong = async (userId, songId) => {
+    const isExist = await Song.findById(songId);
+    if (!isExist) {
+        return {
+            ok: false,
+            statusCode: 400,
+            message: `Bai hat khong ton tai!`
+        }
+    }
+    const favorite = await Favorite.findOne({
+        userId: userId,
+        songId: songId
+    });
+
+    await Song.updateOne(
+        { _id: songId },
+        { $pull: { favoriteId: favorite._id } }
+    );
+
+
+    await User.updateOne(
+        { _id: userId },
+        { $pull: { favoriteId: favorite._id } }
+    );
+
+    const removeFavorite = await Favorite.deleteOne({
+        userId: userId,
+        songId: songId
+    });
+
+    if (removeFavorite.deletedCount === 1) {
+        return {
+            ok: true,
+            statusCode: 200,
+            data: removeFavorite,
+            message: "Xoa yeu thich thanh cong!"
+        }
+    }
+    else {
+        return {
+            ok: true,
+            statusCode: 400,
+            data: null,
+            message: "Xoa yeu thich that bai!"
+        }
+    }
+
+}
+
 module.exports = {
     getUsers, createUsers,
     updateUser, deleteUser,
-    addFavoriteSong, getFavoriteSongs
+    addFavoriteSong, getFavoriteId,
+    removeFavoriteSong
 }

@@ -115,6 +115,19 @@ const deleteSong = async (_id) => {
         }
     }
 }
+
+const getFavoriteSongs = async (favoriteId) => {
+    const song = await Song.find({ 'favoriteId': { $in: favoriteId } });
+    return {
+        ok: true,
+        statusCode: 200,
+        data: song,
+        message: "Lay danh sach thanh cong!"
+    }
+}
+
 module.exports = {
-    getSongs, createSong, updateSong, deleteSong, getSongById
+    getSongs, createSong,
+    updateSong, deleteSong,
+    getSongById, getFavoriteSongs
 }
