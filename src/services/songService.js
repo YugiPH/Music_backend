@@ -1,5 +1,5 @@
 const Song = require("../models/song");
-const { uploadSingleFile } = require("./uploadFile");
+const uploadService = require("../services/uploadService")
 
 const getSongs = async () => {
     const songs = await Song.find({}).populate('artist');
@@ -21,7 +21,7 @@ const getSongById = async (id) => {
     }
 }
 
-const createSong = async (data, songFiles, imageFiles) => {
+const createSong = async (data, songfile, imagefile) => {
     const { title, artistId } = data
     const isExist = await Song.findOne({ title: title }).exec();
     if (isExist) {
@@ -31,23 +31,37 @@ const createSong = async (data, songFiles, imageFiles) => {
             message: `Ten ${title} da ton tai!`
         }
     }
-    let resultUploadSong = await uploadSingleFile(songFiles, 'songs');
-    let resultUploadImage = await uploadSingleFile(imageFiles, 'images');
+
+    let resultUploadSong = await uploadService.uploadFile(songfile, 'songs', 'video');
+    let resultUploadImage = await uploadService.uploadFile(imagefile, 'images', 'image');
+
     const song = await Song.create(
         {
             title,
             artist: artistId,
-            streamUrl: resultUploadSong.path,
-            imageUrl: resultUploadImage.path
+            streamUrl: resultUploadSong.url,
+            imageUrl: resultUploadImage.url,
+            imagePublicId: resultUploadImage.public_id,
+            streamPublicId: resultUploadSong.public_id
         }
     );
-    return {
-        ok: true,
-        statusCode: 200,
-        data: song,
-        message: "Tao thanh cong!"
+    if (song) {
+        return {
+            ok: true,
+            statusCode: 200,
+            data: song,
+            message: "Them thanh cong!"
+        }
+    } else {
+        return {
+            ok: true,
+            statusCode: 400,
+            data: null,
+            message: "Them bai hat that bai!"
+        }
     }
 }
+
 const updateSong = async (_id, title, imageFiles) => {
     if (!_id || !title) {
         return {

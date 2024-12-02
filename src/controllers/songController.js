@@ -36,7 +36,13 @@ const createSong = async (req, res) => {
         if (!req.files || Object.keys(req.files).length === 0) {
             return res.status(400).send('No files were uploaded');
         }
-        const result = await songService.createSong(req.body, req.files.songFiles, req.files.imageFiles);
+        const { title, artistId } = req.body
+        const { songfile, imagefile } = req.files
+        if (!title || !artistId) {
+            return res.status(400).send('Missing require params!');
+        }
+
+        const result = await songService.createSong(req.body, songfile, imagefile);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data,

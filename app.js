@@ -7,8 +7,6 @@ const path = require('path');
 require('dotenv').config();
 const usersRouter = require('./src/routes/users');
 const songsRouter = require('./src/routes/songs');
-const uploadRouter = require('./src/routes/upload');
-const albumRouter = require('./src/routes/albums')
 const artistRouter = require('./src/routes/artists')
 const authRouter = require('./src/routes/auth')
 const playlistRouter = require('./src/routes/playlists')
@@ -23,7 +21,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, 'src/public')));
 // config file upload
-app.use(fileUpload());
+app.use(
+  fileUpload({
+    useTempFiles: false,
+  })
+);
 // Routes
 app.get('/', (req, res) => {
   res.send('Welcome to Music App');
@@ -31,8 +33,6 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRouter);
 app.use('/songs', songsRouter);
-app.use('/upload', uploadRouter);
-app.use('/albums', albumRouter);
 app.use('/artists', artistRouter);
 app.use('/auth', authRouter)
 app.use('/playlists', playlistRouter)

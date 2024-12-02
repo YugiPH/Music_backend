@@ -11,7 +11,7 @@ const getArtists = async () => {
 }
 
 const getArtistById = async (artistId) => {
-    const artist = await Artist.findOne({ _id: artistId }).populate(['albums', 'songs']).exec();
+    const artist = await Artist.findOne({ _id: artistId }).populate('songs').exec();
     if (!artist) {
         return {
             ok: false,

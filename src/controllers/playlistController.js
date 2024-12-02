@@ -81,8 +81,23 @@ const deletePlaylist = async (req, res) => {
     }
 }
 
+const getPlaylistById = async (req, res) => {
+    try {
+        const result = await playlistService.getPlaylistById(req.params.id);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 module.exports = {
     createPlaylist, addSongToPlaylist,
     getPlaylists, removeSongFromPlaylist,
-    deletePlaylist
+    deletePlaylist, getPlaylistById
 }

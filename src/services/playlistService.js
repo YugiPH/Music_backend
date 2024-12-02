@@ -31,36 +31,63 @@ const createPlaylist = async (data) => {
 }
 
 const addSongToPlaylist = async (data) => {
-    const { songs, playlistId } = data
-    const isExist = await Playlist.findById(playlistId);
-    if (!isExist) {
+    const { songs, playlistId } = data;
+
+    // Kiểm tra playlist có tồn tại hay không
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
         return {
             ok: false,
             statusCode: 400,
-            message: 'Khong ton tai ds phat!'
-        }
+            message: 'Không tồn tại danh sách phát!'
+        };
     }
-    if (songs.length === 0) {
+
+    // Kiểm tra dữ liệu bài hát
+    if (!songs || songs.length === 0) {
         return {
             ok: false,
             statusCode: 400,
-            message: 'Thieu du lieu!'
-        }
+            message: 'Thiếu dữ liệu bài hát!'
+        };
     }
-    const playlist = await Playlist.updateOne(
-        {
-            _id: playlistId
-        },
-        { songs: songs }
+
+    // Lấy danh sách bài hát hiện tại
+    const currentSongs = playlist.songs;
+
+    // Lọc ra những bài hát chưa tồn tại
+    const newSongs = songs.filter(song => !currentSongs.includes(song));
+
+    if (newSongs.length === 0) {
+        return {
+            ok: false,
+            statusCode: 400,
+            message: 'Tất cả các bài hát đã tồn tại trong danh sách phát!'
+        };
+    }
+
+    // Cập nhật playlist với những bài hát mới
+    const updatedPlaylist = await Playlist.updateOne(
+        { _id: playlistId },
+        { $push: { songs: { $each: newSongs } } }
     );
-    if (playlist.modifiedCount > 0)
+
+    if (updatedPlaylist.modifiedCount > 0) {
         return {
             ok: true,
             statusCode: 200,
-            data: playlist,
-            message: "Them bai hat vao ds phat thanh cong!"
-        }
-}
+            data: updatedPlaylist,
+            message: "Thêm bài hát vào danh sách phát thành công!"
+        };
+    }
+
+    return {
+        ok: false,
+        statusCode: 400,
+        message: "Không thể thêm bài hát vào danh sách phát!"
+    };
+};
+
 
 const getPlaylists = async () => {
     const playlists = await Playlist.find({}).populate('songs');
@@ -124,8 +151,18 @@ const deletePlaylist = async (_id) => {
     }
 }
 
+const getPlaylistById = async (_id) => {
+    const playlists = await Playlist.findById(_id).populate('songs');
+    return {
+        ok: true,
+        statusCode: 200,
+        data: playlists,
+        message: "Lay danh sach thanh cong!"
+    }
+}
+
 module.exports = {
     createPlaylist, addSongToPlaylist,
     getPlaylists, removeSongFromPlaylist,
-    deletePlaylist
+    deletePlaylist, getPlaylistById
 }

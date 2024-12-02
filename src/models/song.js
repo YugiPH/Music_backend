@@ -5,7 +5,9 @@ const songSchema = new mongoose.Schema({
   artist: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: true },
   imageUrl: { type: String, required: true },
   streamUrl: { type: String, required: true },
-  favoriteId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorite' }]
+  favoriteId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorite' }],
+  imagePublicId: { type: String },
+  streamPublicId: { type: String }
 });
 
 module.exports = mongoose.model('Song', songSchema);
