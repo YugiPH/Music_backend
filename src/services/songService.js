@@ -1,4 +1,5 @@
 const Song = require("../models/song");
+const Genre = require("../models/genre");
 const uploadService = require("../services/uploadService")
 
 const getSongs = async () => {
@@ -8,6 +9,16 @@ const getSongs = async () => {
         statusCode: 200,
         data: songs,
         message: "Lay bai hat thanh cong!"
+    }
+}
+
+const countSong = async () => {
+    const songs = await Song.countDocuments({});
+    return {
+        ok: true,
+        statusCode: 200,
+        data: songs,
+        message: "Lấy thông tin thành công!"
     }
 }
 
@@ -22,7 +33,7 @@ const getSongById = async (id) => {
 }
 
 const createSong = async (data, songfile, imagefile) => {
-    const { title, artistId } = data
+    const { title, artistId, genre } = data
     const isExist = await Song.findOne({ title: title }).exec();
     if (isExist) {
         return {
@@ -42,10 +53,16 @@ const createSong = async (data, songfile, imagefile) => {
             streamUrl: resultUploadSong.url,
             imageUrl: resultUploadImage.url,
             imagePublicId: resultUploadImage.public_id,
-            streamPublicId: resultUploadSong.public_id
+            streamPublicId: resultUploadSong.public_id,
+            genre: genre
         }
     );
+
     if (song) {
+        await Genre.updateOne(
+            { _id: genre },
+            { $push: { songs: { $each: [song._id] } } }
+        );
         return {
             ok: true,
             statusCode: 200,
@@ -103,7 +120,7 @@ const updateSong = async (_id, title, imageFiles) => {
     }
 }
 
-const deleteSong = async (_id) => {
+const deleteSong = async (_id, imagePublicId, streamPublicId) => {
     if (!_id) {
         return {
             ok: false,
@@ -111,7 +128,20 @@ const deleteSong = async (_id) => {
             message: `Missing required params`
         }
     }
+
+    const song = await Song.findById(_id)
+
+    if (song) {
+        await Genre.updateOne(
+            { _id: song.genre },
+            { $pull: { songs: song._id } }
+        );
+    }
+
     const data = await Song.deleteOne({ _id: _id });
+    await uploadService.deleteFile(imagePublicId, 'image')
+    await uploadService.deleteFile(streamPublicId, 'video')
+
     if (data.deletedCount === 1) {
         return {
             ok: true,
@@ -140,8 +170,22 @@ const getFavoriteSongs = async (favoriteId) => {
     }
 }
 
+const searchByTitle = async (title) => {
+    const songs = await Song.find({
+        title: { $regex: title, $options: 'i' }
+    });
+
+    return {
+        ok: true,
+        statusCode: 200,
+        data: songs,
+        message: "Tìm kiếm thành công!"
+    };
+}
+
 module.exports = {
     getSongs, createSong,
     updateSong, deleteSong,
-    getSongById, getFavoriteSongs
+    getSongById, getFavoriteSongs,
+    countSong, searchByTitle
 }

@@ -174,12 +174,21 @@ const removeFavoriteSong = async (userId, songId) => {
             message: "Xoa yeu thich that bai!"
         }
     }
+}
 
+const countUser = async () => {
+    const users = await User.countDocuments({});
+    return {
+        ok: true,
+        statusCode: 200,
+        data: users,
+        message: "Lấy thông tin thành công!"
+    }
 }
 
 module.exports = {
     getUsers, createUsers,
     updateUser, deleteUser,
     addFavoriteSong, getFavoriteId,
-    removeFavoriteSong
+    removeFavoriteSong, countUser
 }

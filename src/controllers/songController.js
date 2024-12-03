@@ -15,6 +15,22 @@ const getSongs = async (req, res) => {
     }
 }
 
+const countSong = async (req, res) => {
+    try {
+        const result = await songService.countSong();
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 const getSongById = async (req, res) => {
     try {
         const id = req.params.id
@@ -56,6 +72,7 @@ const createSong = async (req, res) => {
         })
     }
 }
+
 const updateSong = async (req, res) => {
     try {
         const _id = req.params.id;
@@ -78,7 +95,8 @@ const updateSong = async (req, res) => {
 const deleteSong = async (req, res) => {
     try {
         const _id = req.params.id;
-        const result = await songService.deleteSong(_id);
+        const { imagePublicId, streamPublicId } = req.body
+        const result = await songService.deleteSong(_id, imagePublicId, streamPublicId);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data,
@@ -108,8 +126,24 @@ const getFavoriteSongs = async (req, res) => {
     }
 }
 
+const searchByTitle = async (req, res) => {
+    try {
+        const result = await songService.searchByTitle(req.query.title);
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 module.exports = {
     getSongs, createSong,
     updateSong, deleteSong,
-    getSongById, getFavoriteSongs
+    getSongById, getFavoriteSongs,
+    countSong, searchByTitle
 }

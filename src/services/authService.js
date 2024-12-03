@@ -35,7 +35,7 @@ const login = async (email, password) => {
     const isCorrectPassword = bcrypt.compareSync(password, user.password);
     let result = null;
     if (isCorrectPassword === true)
-        result = { username: user.username, email: user.email, _id: user._id }
+        result = { username: user.username, role: user.role, email: user.email, _id: user._id }
     return {
         ok: true,
         statusCode: 200,

@@ -115,8 +115,24 @@ const removeFavoriteSong = async (req, res) => {
     }
 }
 
+const countUser = async (req, res) => {
+    try {
+        const result = await userService.countUser();
+        return res.status(result.statusCode).json({
+            ok: result.ok,
+            data: result.data
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            data: null
+        })
+    }
+}
+
 module.exports = {
     getUsers, createUser,
     updateUser, deleteUser,
-    addFavoriteSong, getFavoriteId, removeFavoriteSong
+    addFavoriteSong, getFavoriteId,
+    removeFavoriteSong, countUser
 }

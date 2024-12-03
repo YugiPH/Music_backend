@@ -10,6 +10,7 @@ const songsRouter = require('./src/routes/songs');
 const artistRouter = require('./src/routes/artists')
 const authRouter = require('./src/routes/auth')
 const playlistRouter = require('./src/routes/playlists')
+const genreRouter = require('./src/routes/genre')
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
@@ -36,6 +37,7 @@ app.use('/songs', songsRouter);
 app.use('/artists', artistRouter);
 app.use('/auth', authRouter)
 app.use('/playlists', playlistRouter)
+app.use('/genres', genreRouter);
 
 // Khởi động server
 const PORT = process.env.PORT;
