@@ -36,7 +36,7 @@ const addSongToPlaylist = async (req, res) => {
 
 const getPlaylists = async (req, res) => {
     try {
-        const result = await playlistService.getPlaylists();
+        const result = await playlistService.getPlaylists(req.body.userId);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data

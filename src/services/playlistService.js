@@ -1,7 +1,7 @@
 const Playlist = require("../models/playlist");
 
 const createPlaylist = async (data) => {
-    const { title } = data
+    const { title, userId } = data
     const isExist = await Playlist.findOne({ title: title }).exec();
     if (isExist) {
         return {
@@ -19,7 +19,8 @@ const createPlaylist = async (data) => {
     }
     const playlist = await Playlist.create(
         {
-            title
+            title,
+            userId
         }
     );
     return {
@@ -89,8 +90,8 @@ const addSongToPlaylist = async (data) => {
 };
 
 
-const getPlaylists = async () => {
-    const playlists = await Playlist.find({}).populate('songs');
+const getPlaylists = async (userId) => {
+    const playlists = await Playlist.find({ userId }).populate('songs');
     return {
         ok: true,
         statusCode: 200,

@@ -128,7 +128,7 @@ const getFavoriteSongs = async (req, res) => {
 
 const searchByTitle = async (req, res) => {
     try {
-        const result = await songService.searchByTitle(req.query.title);
+        const result = await songService.searchByTitle(req.body.title);
         return res.status(result.statusCode).json({
             ok: result.ok,
             data: result.data

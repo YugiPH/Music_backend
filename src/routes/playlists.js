@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/", createPlaylist)
 router.post("/addsong", addSongToPlaylist)
-router.get("/", getPlaylists)
+router.post("/get-playlists", getPlaylists)
 router.put("/remove-song", removeSongFromPlaylist)
 router.delete("/:id", deletePlaylist)
 router.get("/:id", getPlaylistById)
